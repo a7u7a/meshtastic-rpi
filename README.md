@@ -18,7 +18,7 @@ Initial tinkerings and pokings. Hoping to turn this into some form of meshtastic
 
 Current kit:
 
-- [XIAO ESP32S3 & Wio-SX1262 Kit for Meshtastic & LoRa](https://www.seeedstudio.com/Wio-SX1262-with-XIAO-ESP32S3-p-5982.html)
+- [XIAO ESP32S3 & Wio-SX1262 Kit for Meshtastic & LoRa](https://www.seeedstudio.com/Wio-SX1262-with-XIAO-ESP32S3-p-5982.html) Connected via USB cable to the Raspberry Pi
 - [Getting started guide](https://wiki.seeedstudio.com/xiao_esp32s3_&_wio_SX1262_kit_for_meshtastic/)
 
 ## Python CLI installation
