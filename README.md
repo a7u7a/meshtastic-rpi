@@ -51,7 +51,7 @@ Output:
 2 ports found
 ```
 
-Test:
+Test. A successful result downloads the node database and prints your node information, radio configuration and channels.
 
 ```bash
 meshtastic --info
@@ -63,48 +63,34 @@ Test with specific port:
 meshtastic --port /dev/ttyACM0 --info
 ```
 
-A successful result downloads the node database and prints your node information, radio configuration and channels.
+## Configure the node
 
-## Configure (Berlin)
-
-Set the regulatory region first. Modern firmware generates its new keypair when the region is configured. The node may reboot and temporarily disconnect.
+Set the regulatory region first. Modern firmware generates its new keypair when the region is configured. The node may reboot and temporarily disconnect. Using wait here to give some buffer time before disconnecting to avoid write errors. Not exactly sure why, but seems to help.
 
 ```bash
-meshtastic --set lora.region EU_868
+meshtastic --set lora.region EU_868 --wait-to-disconnect 20
 ```
 
 Essential Berlin settings:
 
 ```bash
-meshtastic --set lora.modem_preset MEDIUM_FAST
-meshtastic --set device.role CLIENT
+meshtastic --set lora.modem_preset MEDIUM_FAST --wait-to-disconnect 20
+meshtastic --set device.role CLIENT --wait-to-disconnect 20
 ```
 
 Set meaningful names:
 
 ```bash
-meshtastic --set-owner "foamy soap at home"
-meshtastic --set-owner-short "fsah"
-```
-
-Disable Bluetooth over USB with:
-
-```bash
-meshtastic --set bluetooth.enabled false
-```
-
-The node may reboot. Verify afterward:
-
-```bash
-meshtastic --get bluetooth.enabled
+meshtastic --set-owner "some-name" --wait-to-disconnect 20
+meshtastic --set-owner-short "smnm" --wait-to-disconnect 20
 ```
 
 ### Verify the config
 
 ```bash
-meshtastic --get lora.region # expected: 3
+meshtastic --get lora.region # expected: 3, for EU_868
 meshtastic --get lora.use_preset # expected: True
-meshtastic --get lora.modem_preset # expected: 4
+meshtastic --get lora.modem_preset # expected: 4, for MEDIUM_FAST
 meshtastic --get lora.channel_num
 meshtastic --get lora.tx_enabled
 meshtastic --qr
@@ -120,16 +106,44 @@ chmod 600 ~/meshtastic-backup.yaml
 
 Then, save the backup in a secure place.
 
-```bash
+## Bluetooth
 
+Disable Bluetooth over USB with:
+
+```bash
+meshtastic --set bluetooth.enabled false
 ```
 
-## Misc
+Verify afterward:
+
+```bash
+meshtastic --get bluetooth.enabled
+```
+
+## Misc commands
 
 To watch incoming traffic continuously, run:
 
 ```bash
 meshtastic
+```
+
+Logs:
+
+```bash
+meshtastic --noproto
+```
+
+Show nodes:
+
+```bash
+meshtastic --nodes
+```
+
+Show QR code of the primary-channel URL:
+
+```bash
+meshtastic --qr
 ```
 
 Retrieve public key:
