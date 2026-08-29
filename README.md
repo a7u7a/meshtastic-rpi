@@ -1,18 +1,6 @@
 # Meshtastic node on the Pi
 
-Initial tinkerings and pokings. Hoping to turn this into some form of meshtastic base station in the future.
-
-## To-do
-
-- Update the node's firmware using the [official flasher](https://flasher.meshtastic.org/) (done)
-  - Rotate security keys by choosing full erase
-- Install Meshtastic Python CLI and verify it works (done)
-- Rotate node security keys (done)
-- Disable node's bluetooth (done)
-- Give the node a recognizable name (done)
-- Disable wifi (for now) (done)
-- Backup configuration (done)
-- Add the local BerlinMesh coordination channel described [here](https://codeberg.org/berlinmesh/meshwiki/wiki/Empfohlene-Einstellungen)
+Documenting initial tinkerings. Hoping to turn this into some form of meshtastic base station in the future.
 
 ## Hardware
 
@@ -20,6 +8,10 @@ Current kit:
 
 - [XIAO ESP32S3 & Wio-SX1262 Kit for Meshtastic & LoRa](https://www.seeedstudio.com/Wio-SX1262-with-XIAO-ESP32S3-p-5982.html) Connected via USB cable to the Raspberry Pi
 - [Getting started guide](https://wiki.seeedstudio.com/xiao_esp32s3_&_wio_SX1262_kit_for_meshtastic/)
+
+# Setup
+
+First, update the node's firmware using the [official flasher](https://flasher.meshtastic.org/)
 
 ## Python CLI installation
 
@@ -65,7 +57,8 @@ meshtastic --port /dev/ttyACM0 --info
 
 ## Configure the node
 
-Set the regulatory region first. Modern firmware generates its new keypair when the region is configured. The node may reboot and temporarily disconnect. Using wait here to give some buffer time before disconnecting to avoid write errors. Not exactly sure why, but seems to help.
+Set the regulatory region first. The firmware generates a new keypair when the region is configured. The node may reboot and temporarily disconnect.
+Using wait here to give some buffer time before disconnecting to avoid write errors. Not exactly sure why, but seems to help.
 
 ```bash
 meshtastic --set lora.region EU_868 --wait-to-disconnect 20
@@ -157,18 +150,32 @@ Retrieve public key:
 meshtastic --get security.public_key
 ```
 
-## Ideas
+## Example: Adding a channel
 
-Cool things to try. From easy to advanced:
+Let's add the [Berlin Chaos Mesh](https://potatomesh.net/pages/about) channel.
+You may want to update the backup after adding a new channel.
 
-- Send a message on the primary channel — someone may reply
-- Enable telemetry — my node can broadcast battery voltage, and if you add sensors later, temperature/humidity
-- Traceroute — in the web client, pick any node and run a traceroute to see the exact hops your packet takes to reach it. Fascinating way to understand the mesh topology
-- Create a private channel using custom PSK
-- Set up MQTT + WiFi on your node so it becomes a gateway for your local area
-- Range test module — walks you through automatic range testing, logs RSSI/SNR at each point
-- Run a Store & Forward server on the XIAO ESP32S3
-- Python CLI (`pip install meshtastic`) — lets you script interactions, send messages programmatically, read telemetry from Raspberry Pi.
-- ePaper display — the project you already have planned
-- Custom sensor node — attach a temperature sensor and have it broadcast readings into the mesh as telemetry
-- PlatformIO custom module — as discussed
+Create the channel:
+
+```bash
+meshtastic --ch-add BerlinMesh
+```
+
+Configure the channel index and public key:
+
+```bash
+meshtastic --ch-index 1 --ch-set psk \
+  'base64:Nmh7EooP2Tsc+7pvPwXLcEDDuYhk+fBo2GLnbA1Y1sg='
+```
+
+To listen. Haven't found a way to filter output by channel yet.
+
+```bash
+meshtastic --listen
+```
+
+To send a message specifically to BerlinMesh:
+
+```bash
+meshtastic --ch-index 1 --sendtext "Hello BerlinMesh"
+```
