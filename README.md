@@ -1,4 +1,4 @@
-# Meshtastic node on the pi
+# Meshtastic node on the Pi
 
 Initial tinkerings and pokings. Hoping to turn this into some form of meshtastic base station in the future.
 
@@ -11,7 +11,7 @@ Initial tinkerings and pokings. Hoping to turn this into some form of meshtastic
 - Disable node's bluetooth (done)
 - Give the node a recognizable name (done)
 - Disable wifi (for now) (done)
-- Backup configuration
+- Backup configuration (done)
 - Add the local BerlinMesh coordination channel described [here](https://codeberg.org/berlinmesh/meshwiki/wiki/Empfohlene-Einstellungen)
 
 ## Hardware
@@ -23,7 +23,7 @@ Current kit:
 
 ## Python CLI installation
 
-Install using virtual environment:
+Install using virtual environment. SSH into the Pi and run:
 
 ```bash
 python3 --version
@@ -96,19 +96,24 @@ meshtastic --get lora.tx_enabled
 meshtastic --qr
 ```
 
-### Create new config backup
+### Create a backup of the node's configuration
+
+Save the backup in a secure place. This snippet copies the config from the Pi into the clipboard. It runs the Meshtastic CLI installed inside the virtual environment, reads the connected radio’s configuration and prints it as YAML.
 
 ```bash
-umask 077
-meshtastic --export-config > ~/meshtastic-backup.yaml
-chmod 600 ~/meshtastic-backup.yaml
+ssh your@pi.local '~/.venvs/meshtastic/bin/meshtastic --export-config' | pbcopy
 ```
-
-Then, save the backup in a secure place.
 
 ## Bluetooth
 
-Disable Bluetooth over USB with:
+Set a non-default Bluetooth PIN:
+
+```bash
+meshtastic --set bluetooth.mode FIXED_PIN
+meshtastic --set bluetooth.fixed_pin 123456
+```
+
+Or, disable Bluetooth over USB with:
 
 ```bash
 meshtastic --set bluetooth.enabled false
