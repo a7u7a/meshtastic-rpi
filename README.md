@@ -179,3 +179,37 @@ To send a message specifically to BerlinMesh:
 ```bash
 meshtastic --ch-index 1 --sendtext "Hello BerlinMesh"
 ```
+
+# MeshConsole
+
+https://github.com/m9wav/MeshConsole
+
+```bash
+deactivate
+python3 -m venv ~/.venvs/meshconsole
+source ~/.venvs/meshconsole/bin/activate
+python -m pip install --upgrade pip
+python -m pip install "meshconsole[meshtastic]"
+```
+
+Start it:
+
+```bash
+meshconsole listen --usb --port /dev/ttyACM0 --web
+```
+
+Open SSH tunnel:
+
+```bash
+ssh -N -L 5055:127.0.0.1:5055 your@pi.local
+```
+
+Then, visit:
+
+```bash
+http://localhost:5055
+```
+
+## MeshDash (to-do)
+
+https://github.com/ruspea/MeshDash
