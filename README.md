@@ -150,7 +150,27 @@ Retrieve public key:
 meshtastic --get security.public_key
 ```
 
-## Example: Adding a channel
+## Example 1: Send a message
+
+Send a message on the primary channel:
+
+```bash
+meshtastic --sendtext "Hello"
+```
+
+To another node and wait for an ACK from that node:
+
+```bash
+meshtastic --dest '!28979058' --sendtext "Hello, just you" --ack
+```
+
+If you only share a secondary channel:
+
+```bash
+meshtastic --ch-index 1 --dest '!28979058' --sendtext "Hello, just you"
+```
+
+## Example 2: Adding a channel
 
 Let's add the [Berlin Chaos Mesh](https://potatomesh.net/pages/about) channel.
 You may want to update the backup after adding a new channel.
@@ -164,7 +184,7 @@ meshtastic --ch-add BerlinMesh
 Configure the channel index and public key:
 
 ```bash
-meshtastic --ch-index 1 --ch-set psk \
+meshtastic --ch-index 1 --ch-set name BerlinMesh psk \
   'base64:Nmh7EooP2Tsc+7pvPwXLcEDDuYhk+fBo2GLnbA1Y1sg='
 ```
 
